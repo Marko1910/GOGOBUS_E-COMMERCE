@@ -9,10 +9,11 @@ import { FerrisWheel as SteeringWheel } from 'lucide-react'
 interface SeatMapProps {
   seatMap: SeatMapType
   selectedSeats: string[]
+  pendingSeats?: string[]
   onSeatSelect: (seatId: string) => void
 }
 
-export function SeatMap({ seatMap, selectedSeats, onSeatSelect }: SeatMapProps) {
+export function SeatMap({ seatMap, selectedSeats, pendingSeats = [], onSeatSelect }: SeatMapProps) {
   const [floor, setFloor] = useState<1 | 2>(1)
   
   // Filter seats by floor (assuming row numbers indicate floor, e.g., 1-10 floor 1, 11-20 floor 2)
@@ -25,18 +26,25 @@ export function SeatMap({ seatMap, selectedSeats, onSeatSelect }: SeatMapProps) 
     const isSelected = selectedSeats.includes(seat.id)
     const isOccupied = seat.status === 'occupied'
     const isBlocked = seat.status === 'blocked'
+    const isPending = seat.status === 'pending' || pendingSeats.includes(seat.id)
+    const disabled = isOccupied || isBlocked || (isPending && !isSelected)
     
     return (
       <button
         key={seat.id}
-        disabled={isOccupied || isBlocked}
+        disabled={disabled}
         onClick={() => onSeatSelect(seat.id)}
         className={cn(
           "w-10 h-10 m-1 rounded-t-lg rounded-b-md border-2 flex items-center justify-center text-xs font-bold transition-all relative group",
-          isOccupied ? "bg-gray-300 border-gray-400 text-gray-500 cursor-not-allowed" :
-          isBlocked ? "bg-orange-100 border-orange-300 text-orange-400 cursor-not-allowed" :
-          isSelected ? "bg-primary border-primary text-white shadow-md scale-105" :
-          "bg-white border-primary/30 text-primary hover:border-secondary hover:text-secondary"
+          isOccupied
+            ? "bg-gray-300 border-gray-400 text-gray-500 cursor-not-allowed"
+            : isBlocked
+            ? "bg-orange-100 border-orange-300 text-orange-400 cursor-not-allowed"
+            : isPending
+            ? "bg-amber-100 border-amber-300 text-amber-700 cursor-not-allowed"
+            : isSelected
+            ? "bg-primary border-primary text-white shadow-md scale-105"
+            : "bg-white border-primary/30 text-primary hover:border-secondary hover:text-secondary"
         )}
       >
         {seat.number}
@@ -85,6 +93,10 @@ export function SeatMap({ seatMap, selectedSeats, onSeatSelect }: SeatMapProps) 
           <span>Disponible</span>
         </div>
         <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded border-2 border-amber-300 bg-amber-100" />
+          <span>Pendiente</span>
+        </div>
+        <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded border-2 border-primary bg-primary" />
           <span>Seleccionado</span>
         </div>
@@ -95,24 +107,42 @@ export function SeatMap({ seatMap, selectedSeats, onSeatSelect }: SeatMapProps) 
       </div>
 
       {/* Bus Layout */}
-      <div className="relative max-w-[300px] mx-auto bg-gray-50 rounded-3xl p-8 border-2 border-gray-200">
+      <div className="relative max-w-[360px] mx-auto bg-gray-50 rounded-3xl p-6 border-2 border-gray-200">
         {/* Driver Area */}
-        <div className="absolute top-4 right-8 text-gray-400">
+        <div className="absolute top-3 right-6 text-gray-400">
           <SteeringWheel className="w-8 h-8" />
         </div>
 
-        <div className="mt-12 space-y-4">
-          {/* Render seats based on layout grid logic */}
-          {/* This is a simplified grid rendering, real implementation would use the layout matrix */}
-          <div className="grid grid-cols-4 gap-x-8 gap-y-2">
-            {(floor === 1 ? floor1Seats : floor2Seats).map(seat => (
-              <div key={seat.id} className={cn(
-                seat.column === 2 ? "mr-8" : "" // Aisle gap
-              )}>
-                {renderSeat(seat)}
+        <div className="mt-12 space-y-3">
+          {(floor === 1 ? floor1Seats : floor2Seats)
+            .sort((a, b) => (a.row === b.row ? a.column - b.column : a.row - b.row))
+            .reduce((rows: Record<number, Seat[]>, seat) => {
+              rows[seat.row] = rows[seat.row] || []
+              rows[seat.row].push(seat)
+              return rows
+            }, {})
+          }
+          {Object.entries(
+            (floor === 1 ? floor1Seats : floor2Seats)
+              .sort((a, b) => (a.row === b.row ? a.column - b.column : a.row - b.row))
+              .reduce((rows: Record<number, Seat[]>, seat) => {
+                rows[seat.row] = rows[seat.row] || []
+                rows[seat.row].push(seat)
+                return rows
+              }, {})
+          ).map(([rowNumber, seats]) => {
+            const left = seats.filter((s) => s.column <= 2)
+            const right = seats.filter((s) => s.column > 2)
+            return (
+              <div key={rowNumber} className="flex items-center justify-center gap-6">
+                <div className="flex gap-2">{left.map(renderSeat)}</div>
+                <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs font-semibold">
+                  {rowNumber}
+                </div>
+                <div className="flex gap-2">{right.map(renderSeat)}</div>
               </div>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
     </div>

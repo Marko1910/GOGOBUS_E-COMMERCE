@@ -116,6 +116,7 @@ export function HeroSearch() {
                   <div className="relative">
                     <input
                       type="date"
+                      min={new Date().toISOString().split('T')[0]}
                       value={searchForm.departureDate}
                       onChange={(e) => handleDateChange(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F5951F] focus:border-transparent text-sm"

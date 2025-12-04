@@ -53,7 +53,7 @@ export interface Seat {
   row: number
   column: number
   type: 'standard' | 'premium' | 'vip'
-  status: 'available' | 'occupied' | 'blocked' | 'selected'
+  status: 'available' | 'occupied' | 'blocked' | 'selected' | 'pending'
   price: number
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -43,9 +43,19 @@ export default function TripDetailPage() {
   const { data: seatMap, isLoading: isLoadingSeats } = useSeatMap(tripId)
 
   const handleSeatSelect = (seatId: string) => {
-    setSelectedSeats((prev) =>
-      prev.includes(seatId) ? prev.filter((id) => id !== seatId) : [...prev, seatId]
-    )
+    setSelectedSeats((prev) => {
+      if (prev.includes(seatId)) {
+        const next = prev.filter((id) => id !== seatId)
+        const updatedDrafts = { ...passengerDrafts }
+        delete updatedDrafts[seatId]
+        setPassengerDrafts(updatedDrafts)
+        if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+          sessionStorage.setItem('gogobus_passengers', JSON.stringify(updatedDrafts))
+        }
+        return next
+      }
+      return [...prev, seatId]
+    })
     const draft = passengerDrafts[seatId]
     setPassengerForm(
       draft || {
@@ -125,6 +135,11 @@ export default function TripDetailPage() {
 
   if (!trip || !seatMap) return null
 
+  const pendingSeats = useMemo(
+    () => selectedSeats.filter((seatId) => !!passengerDrafts[seatId]),
+    [selectedSeats, passengerDrafts]
+  )
+
   return (
     <div className="min-h-screen flex flex-col bg-muted/10">
       <div className="bg-primary pb-20 pt-24">
@@ -152,6 +167,7 @@ export default function TripDetailPage() {
           <div className="space-y-6">
             <SeatMap 
               seatMap={seatMap}
+              pendingSeats={pendingSeats}
               selectedSeats={selectedSeats}
               onSeatSelect={handleSeatSelect}
             />
@@ -206,6 +222,46 @@ export default function TripDetailPage() {
                       {trip.currency} {(trip.price * selectedSeats.length).toFixed(2)}
                     </span>
                   </div>
+
+                  {selectedSeats.length > 0 && (
+                    <div className="space-y-3 mb-4">
+                      <p className="text-sm font-semibold text-primary">Datos de pasajeros</p>
+                      <div className="space-y-2">
+                        {selectedSeats.map((seatId) => {
+                          const passenger = passengerDrafts[seatId]
+                          const completo =
+                            passenger &&
+                            passenger.firstName &&
+                            passenger.lastName &&
+                            passenger.documentNumber &&
+                            passenger.email &&
+                            passenger.phone
+                          return (
+                            <div
+                              key={seatId}
+                              className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm bg-muted/40"
+                            >
+                              <div>
+                                <p className="font-semibold text-primary">Asiento {seatId}</p>
+                                <p className="text-muted-foreground">
+                                  {completo
+                                    ? `${passenger.firstName} ${passenger.lastName}`
+                                    : 'Datos pendientes'}
+                                </p>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant={completo ? 'outline' : 'default'}
+                                onClick={() => handleSeatSelect(seatId)}
+                              >
+                                {completo ? 'Editar' : 'Completar'}
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   <Button 
                     className="w-full h-12 text-lg bg-secondary hover:bg-secondary/90 text-white"
