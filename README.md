@@ -1,30 +1,16 @@
-# GOGOBUS ecommerce platform
+# GOGOBUS e-commerce platform
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+Aplicación web para buscar, reservar y pagar boletos de bus con selección de asientos, checkout y flujo de pago integrable con Mercado Pago.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/marko1910s-projects/v0-gogobus-ecommerce-platform)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/jb9h4qGLoNW)
+## Scripts
+- `npm run dev` – modo desarrollo
+- `npm run build` – build de producción
+- `npm run start` – sirve el build
+- `npm run lint` – linting
 
-## Overview
+## Requisitos
+- Node 18+
+- Instalar dependencias: `npm install`
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
-
-## Deployment
-
-Your project is live at:
-
-**[https://vercel.com/marko1910s-projects/v0-gogobus-ecommerce-platform](https://vercel.com/marko1910s-projects/v0-gogobus-ecommerce-platform)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.app/chat/jb9h4qGLoNW](https://v0.app/chat/jb9h4qGLoNW)**
-
-## How It Works
-
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository# GOGOBUS_E-COMMERCE
+## Notas
+- Recuerda no commitear `node_modules/` ni artefactos de build (`.next/`). Añádelos al `.gitignore` si aún no están.

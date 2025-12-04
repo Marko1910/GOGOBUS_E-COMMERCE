@@ -15,7 +15,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'GOGOBUS - Tu viaje empieza aquí',
   description: 'Compra boletos de bus de manera fácil y segura. Los mejores precios y destinos.',
-  generator: 'v0.app',
+  generator: 'GOGOBUS',
   keywords: ['boletos de bus', 'viajes', 'transporte', 'gogobus', 'pasajes'],
   icons: {
     icon: [
