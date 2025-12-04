@@ -12,5 +12,10 @@ Aplicación web para buscar, reservar y pagar boletos de bus con selección de a
 - Node 18+
 - Instalar dependencias: `npm install`
 
+## Variables de entorno
+Copia `.env.example` a `.env.local` y completa:
+- `NEXT_PUBLIC_API_URL`: endpoint de tu backend.
+- `NEXT_PUBLIC_MP_ACCESS_TOKEN`: Access Token de producción de Mercado Pago (para generar preferencias de pago).
+
 ## Notas
 - Recuerda no commitear `node_modules/` ni artefactos de build (`.next/`). Añádelos al `.gitignore` si aún no están.

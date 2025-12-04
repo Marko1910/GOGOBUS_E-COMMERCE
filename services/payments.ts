@@ -1,7 +1,7 @@
 import api, { handleApiError } from '@/lib/api'
 import type { PaymentStatus } from '@/types'
 
-const DEFAULT_MP_ACCESS_TOKEN = process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN || 'TEST-8bc5ff8c-ff17-421a-a177-12201efea369'
+const DEFAULT_MP_ACCESS_TOKEN = process.env.NEXT_PUBLIC_MP_ACCESS_TOKEN || ''
 
 export const paymentsService = {
   getPaymentStatus: async (bookingId: string): Promise<PaymentStatus> => {
@@ -33,6 +33,9 @@ export const paymentsService = {
     accessToken?: string
   }): Promise<string | undefined> => {
     const token = params.accessToken || DEFAULT_MP_ACCESS_TOKEN
+    if (!token) {
+      throw new Error('Falta NEXT_PUBLIC_MP_ACCESS_TOKEN. Configúralo en tu entorno para crear la preferencia.')
+    }
     const payload = {
       items: [
         {
