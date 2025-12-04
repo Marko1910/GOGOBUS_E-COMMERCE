@@ -1,5 +1,8 @@
 'use client'
 
+// Evita que plataformas de static export intenten prerenderizar este flujo dinámico
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { format } from 'date-fns'

@@ -1,5 +1,10 @@
 'use client'
 
+'use client'
+
+// Evita la prerenderización estática en plataformas que intentan exportar el sitio
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { CheckCircle2, Ticket, ArrowRight, Download } from 'lucide-react'
