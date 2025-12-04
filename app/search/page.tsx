@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useMemo, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Filter, ArrowUpDown, X } from 'lucide-react'
@@ -10,6 +12,8 @@ import { useSearchTrips } from '@/hooks/use-search-trips'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AutoCompleteCity } from '@/components/search/location-autocomplete'
+
+export const dynamic = 'force-dynamic'
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
