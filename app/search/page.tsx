@@ -13,8 +13,6 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AutoCompleteCity } from '@/components/search/location-autocomplete'
 
-export const dynamic = 'force-dynamic'
-
 export default function SearchPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
