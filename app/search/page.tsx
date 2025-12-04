@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useMemo, useState } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Filter, ArrowUpDown, X } from 'lucide-react'
 import { Header } from '@/components/layout/header'
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AutoCompleteCity } from '@/components/search/location-autocomplete'
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const originId = searchParams.get('originId') || ''
@@ -252,5 +252,13 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando búsqueda...</div>}>
+      <SearchContent />
+    </Suspense>
   )
 }
