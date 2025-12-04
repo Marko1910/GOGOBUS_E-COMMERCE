@@ -1,14 +1,13 @@
 'use client'
 
-'use client'
-
 export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 
-export default function LoginPage() {
+function LoginContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const redirect = searchParams.get('redirect') || '/'
@@ -54,5 +53,13 @@ export default function LoginPage() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando...</div>}>
+      <LoginContent />
+    </Suspense>
   )
 }
