@@ -1,11 +1,8 @@
 'use client'
 
-'use client'
-
-// Evita la prerenderización estática en plataformas que intentan exportar el sitio
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { CheckCircle2, Ticket, ArrowRight, Download } from 'lucide-react'
 import { Header } from '@/components/layout/header'
@@ -30,7 +27,7 @@ interface TicketData {
   createdAt?: string
 }
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const bookingId = searchParams.get('bookingId') || '—'
@@ -218,5 +215,13 @@ export default function CheckoutSuccessPage() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Cargando...</div>}>
+      <SuccessContent />
+    </Suspense>
   )
 }
